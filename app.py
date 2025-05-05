@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, session, send_file, redirect, url_for
-from telethon.sync import TelegramClient
-import os, uuid, shutil
-import threading
-import time
+from telethon import TelegramClient
+import os, uuid, shutil, threading, time, asyncio
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkufufrururututiittt458aawe'
@@ -17,6 +15,21 @@ def schedule_cleanup(path, delay=600):
         if os.path.exists(path):
             shutil.rmtree(path, ignore_errors=True)
     threading.Thread(target=delete_later, daemon=True).start()
+
+
+# Async functions for Telethon
+async def send_code_request_async(session_path, api_id, api_hash, phone):
+    client = TelegramClient(f"{session_path}/{SESSION_FILENAME}", api_id, api_hash)
+    await client.connect()
+    await client.send_code_request(phone)
+    await client.disconnect()
+
+
+async def sign_in_async(session_path, api_id, api_hash, phone, code):
+    client = TelegramClient(f"{session_path}/{SESSION_FILENAME}", api_id, api_hash)
+    await client.connect()
+    await client.sign_in(phone, code)
+    await client.disconnect()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -34,19 +47,13 @@ def login():
             unique_folder = f"{SESSION_DIR}/{uuid.uuid4().hex}"
             os.makedirs(unique_folder, exist_ok=True)
             session['session_path'] = unique_folder
-            client = TelegramClient(f"{unique_folder}/{SESSION_FILENAME}", session['api_id'], session['api_hash'])
-            client.connect()
-            client.send_code_request(session['phone'])
-            client.disconnect()
+            asyncio.run(send_code_request_async(unique_folder, session['api_id'], session['api_hash'], session['phone']))
             return render_template('index.html', step='code')
 
         elif step == 'code':
             code = request.form['code']
             session_path = session.get('session_path')
-            client = TelegramClient(f"{session_path}/{SESSION_FILENAME}", session['api_id'], session['api_hash'])
-            client.connect()
-            client.sign_in(session['phone'], code)
-            client.disconnect()
+            asyncio.run(sign_in_async(session_path, session['api_id'], session['api_hash'], session['phone'], code))
             schedule_cleanup(session_path)
             return redirect(url_for('done'))
 
