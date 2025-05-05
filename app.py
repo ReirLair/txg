@@ -5,7 +5,7 @@ import threading
 import time
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+app.secret_key = 'supersecretkufufrururututiittt458aawe'
 
 SESSION_DIR = 'sessions'
 SESSION_FILENAME = 'aayco.session'
