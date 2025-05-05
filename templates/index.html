@@ -16,44 +16,47 @@
 
         .container {
             background-color: #1f1f1f;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.6);
-            max-width: 400px;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.7);
+            max-width: 500px;
             width: 100%;
             text-align: center;
         }
 
         h2 {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            font-size: 28px;
             color: #00adb5;
         }
 
-        input[type="text"] {
+        input[type="text"],
+        input[type="tel"] {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 18px;
+            margin: 12px 0;
             background-color: #2e2e2e;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             color: #fff;
-            font-size: 14px;
+            font-size: 18px;
         }
 
-        input[type="text"]::placeholder {
-            color: #aaa;
+        input::placeholder {
+            color: #bbb;
         }
 
         button {
             background-color: #00adb5;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 15px;
+            padding: 16px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         button:hover {
@@ -61,17 +64,18 @@
         }
 
         a button {
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         p {
-            margin-top: 20px;
+            margin-top: 25px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Telegram Session Generator</h2>
+        <h2>ReiX Session Generator</h2>
 
         {% if step == 'api' %}
         <form method="POST">
@@ -84,7 +88,7 @@
         {% elif step == 'phone' %}
         <form method="POST">
             <input type="hidden" name="step" value="phone" />
-            <input type="text" name="phone" placeholder="+201111111111" required>
+            <input type="tel" name="phone" placeholder="+201111111111" required>
             <button type="submit">Send Code</button>
         </form>
 
